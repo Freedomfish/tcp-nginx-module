@@ -7,13 +7,14 @@ pp_pkg_handler(ngx_tcp_ctx_t *ctx, const u_char *pkg, int pkg_len);
 
 
 long 
-cmdso_load(void *cycle_param, cmd_pkg_handler_add_pt add_h, int slot)
+cmdso_load(void *cycle_param, cmd_pkg_handler_add_pt add_h, int slot, ngx_tcp_global_ctx_t *load_ctx)
 {
     pp_cmdso_slot = slot;
     if (0 != (*add_h)(cycle_param, PP_CMD_CS, PP_CMD_CS, pp_pkg_handler)) {
+        load_ctx->log_error(NGX_TCP_ERROR, load_ctx->log, "add pp_pkg_handler failed");
         return -1;
     }
-
+    
     return 0;
 }
 
